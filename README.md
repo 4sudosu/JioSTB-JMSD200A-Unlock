@@ -178,6 +178,8 @@ Apps that work well on this box (`armeabi-v7a` — always pick the **32-bit ARM*
 | **Kartoons** | Cartoons for kids | STB | search "Kartoons APK" — get it from a source you trust |
 | **Send Files to TV** | Phone ⇄ TV file sharing over Wi‑Fi, **and** direct APK installs on the box (see below) | STB **and** phone | Play Store on phone; on the box install `com.yablio.sendfilestotv`. If you have an `.xapk`, unzip & `adb install-multiple` base + `config.en` + density split — **skip `config.arm64_v8a`** on this 32-bit box or it crashes/mis-installs. |
 | **Tellyscope** | Control the STB from your phone (remote) | **Phone only** — NOT on the STB | search "Tellyscope APK" — get it from a source you trust |
+| **Activity Launcher** | Open hidden activities / Developer options (e.g. `com.android.tv.settings` → Development) — useful when menus are hidden | STB / Android TV | Plain **`.apk`** (no bundle/xapk): [github.com/ActivityLauncher/ActivityLauncher/releases](https://github.com/ActivityLauncher/ActivityLauncher/releases) (e.g. `app-oss-noads-release.apk`) or [F-Droid](https://f-droid.org/en/packages/de.szalkowski.activitylauncher/) |
+| **Key Mapper** | Remap remote/buttons, launch actions/apps (FOSS) | STB / Android TV | Plain **`.apk`**: [github.com/keymapperorg/KeyMapper/releases](https://github.com/keymapperorg/KeyMapper/releases) (e.g. `keymapper-*-foss.apk`) |
 
 Install via ADB:
 
