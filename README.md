@@ -122,6 +122,41 @@ adb install "C:\path\to\your_app.apk"
 
 > ℹ️ The stock APK installer can't be re-enabled on this firmware — every install goes through ADB.
 
+## 📲 Recommended APKs
+
+Apps that work well on this box (`armeabi-v7a` — always pick the **32-bit ARM** build when an app offers multiple APKs):
+
+| App | Purpose | Install where | Where to get it |
+|---|---|---|---|
+| **SmartTube** | YouTube with **no ads** + background play + SponsorBlock | STB | [github.com/yuliskov/SmartTube/releases](https://github.com/yuliskov/SmartTube/releases) → pick `armeabi-v7a` |
+| **NetMirror** | Latest movies & web series | STB | search "NetMirror APK" — get it from a source you trust |
+| **Kartoons** | Cartoons for kids | STB | search "Kartoons APK" — get it from a source you trust |
+| **Send Files to TV** | Phone ⇄ TV file sharing over Wi‑Fi, **and** direct APK installs on the box (see below) | STB **and** phone | Play Store on phone; the `com.yablio.sendfilestotv` APK on the box |
+| **Tellyscope** | Control the STB from your phone (remote) | **Phone only** — NOT on the STB | search "Tellyscope APK" — get it from a source you trust |
+
+Install via ADB:
+
+```bash
+adb connect <STB_IP>:5555
+adb -s <STB_IP>:5555 install -r "path\to\app.apk"
+```
+
+### Install unknown apps directly on the box (no PC needed afterwards)
+
+After you install **Send Files to TV** on the box, grant it the install permission — then any APK you send from your phone can be installed right on the TV:
+
+```bash
+adb -s <STB_IP>:5555 install -r "path\to\SendFilesToTV.apk"        # install first
+adb -s <STB_IP>:5555 shell "appops set com.yablio.sendfilestotv REQUEST_INSTALL_PACKAGES allow"
+adb -s <STB_IP>:5555 shell "settings put global verifier_verify_adb_installs 0"
+adb -s <STB_IP>:5555 shell "settings put secure install_non_market_apps 1"
+```
+
+From then on: share any APK from your phone → *Send Files to TV* → the box receives it → Android asks "install unknown app?" → allow → done. No ADB needed for future installs.
+
+> ⚠️ The `appops` grant **must run after** Send Files to TV is installed — it fails with `No UID for com.yablio.sendfilestotv in user 0` otherwise.
+
+
 ### 5. Plan‑B when DNS just won't take (advanced)
 
 If the box stubbornly ignores its DNS settings (this firmware's static‑IP screen is flaky and Jio's DNS interception rules hit them), [`mitm.py`](mitm.py) intercepts at the network layer instead:
@@ -133,6 +168,8 @@ python mitm.py            # ARP-poisons the gateway +forwards all traffic, and
 ```
 
 Needs Npcap + `scapy`. Detects your Wi‑Fi adapter automatically (edit `PC_IP`/`BOX_IP`/`GW_IP` at the top for your subnet).
+
+Want the full field-notes — every error we hit, exact Windows quirks, and the automation watcher loops? See **[AI.md](AI.md)** — the operations manual written for AI agents (and humans who like the whole story).
 
 ### 6. What else you get (Stage 1 post‑setup)
 
