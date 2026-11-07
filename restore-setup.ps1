@@ -43,6 +43,9 @@ Install-Match "SmartTube (armeabi-v7a)" "*SmartTube*armeabi-v7a*.apk"
 Install-Match "Kartoons" "*kartoons*.apk"
 Install-Match "NetMirror (Android TV)" "*netmirror*.apk"
 Install-Match "Send Files to TV" "*send*files*tv*.apk"
+# optional
+$f = Get-ChildItem -Path $ApkDir -Filter "*aptoide*.apk" -File -ErrorAction SilentlyContinue | Select-Object -First 1
+if ($f) { Write-Host "  installing Aptoide: $($f.FullName)"; adb -s $Stb install -r $f.FullName } else { Write-Host "  (optional) Aptoide not found in $ApkDir (*aptoide*.apk)" }
 
 Write-Host "[4/4] Send Files to TV install permission (direct APK installs on box)"
 $pkgs = adb -s $Stb shell pm list packages 2>&1

@@ -56,6 +56,9 @@ else
   echo "  MISSING Send Files to TV -> $APK_DIR (*send*files*tv*.apk). If you have .xapk, unzip &: adb install-multiple base.apk config.en.apk config.*dpi*.apk (SKIP config.arm64_v8a on 32-bit)"
   miss=1
 fi
+# optional
+apto=$(ls $APK_DIR/*aptoide*.apk 2>/dev/null | head -1 || true)
+if [ -n "${apto:-}" ]; then install_match "Aptoide" "*aptoide*.apk" || true; else echo "  (optional) Aptoide not found in $APK_DIR (*aptoide*.apk)"; fi
 
 echo "[4/4] Send Files to TV install permission (direct APK installs on box)"
 if adb -s "$STB" shell pm list packages | grep -q com.yablio.sendfilestotv; then

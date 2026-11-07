@@ -153,8 +153,10 @@ Verified installs on JMSD200A (32-bit ARM, ABI `armeabi-v7a` — do NOT use arm6
 
 | App | Package | Notes |
 |---|---|---|
-| SmartTube 32.71 (armeabi-v7a) | `org.smarttube.stable` | YouTube w/o ads — [releases](https://github.com/yuliskov/SmartTube/releases). **Remote YouTube button → SmartTube** via `com.jiostb.youtubebutton` accessibility service (catches KEYCODE_F10/140, scan 187 on Jio BLE remote) — enabled by default; stock YouTube (`com.jio.yt`) uninstalled. |
-| YouTube button remap | `com.jiostb.youtubebutton` | bundled `apk/youtube-button-remap.apk` + `enabled_accessibility_services` |
+| SmartTube 32.71 (armeabi-v7a) | `org.smarttube.stable` | YouTube w/o ads. Remote: YouTube button→SmartTube, Netflix button→Kartoons via `com.jiostb.youtubebutton` (enabled). Stock `com.jio.yt` uninstalled. |
+| YouTube/Netflix button remap | `com.jiostb.youtubebutton` | `apk/youtube-button-remap.apk` + accessibility enabled (YouTube=140/scan187→SmartTube, Netflix=137→Kartoons) |
+| Aptoide (optional) | `cm.aptoide.pt` | user APK |
+| MT Manager (optional, box) | `bin.mt.plus` | file manager/installer; grant storage+REQUEST_INSTALL_PACKAGES |
 | Kartoons | `com.kartoons.app` | obtained APK |
 | NetMirror (Android TV) | `app.netmirror.newtv` | movies/series |
 | Send Files to TV 1.4.22 | `com.yablio.sendfilestotv` | **install from split bundle correctly** (see §7 xapk row); `REQUEST_INSTALL_PACKAGES` granted for direct installs |
@@ -181,8 +183,7 @@ This repo can restore the current box state (see `setup-manifest.json`). Use whe
 ./restore-setup.sh <STB_IP>:5555
 ```
 
-What it does: confirms ADB `device`, sets `global verifier_verify_adb_installs=0` + `secure install_non_market_apps=1`, maps `jio_premium_remote_setup_complete` (YouTube key → SmartTube), installs bundled `apk/android-settings-shortcut.apk` + `apk/youtube-button-remap.apk`, enables accessibility service `com.jiostb.youtubebutton/.YouTubeButtonService` (**remote YouTube button → SmartTube**, catches KEYCODE_F10/140 scan 187), installs any matching APKs from `user-apks/` (SmartTube `*armeabi-v7a*`, kartoons, netmirror Android TV, send files to tv), grants `com.yablio.sendfilestotv REQUEST_INSTALL_PACKAGES=allow` if present, prints missing items. **Safe to re-run.** Does NOT bundle third-party APKs and does NOT restore Jio launcher home-pin order (launcher-owned config).
-then APks can be sent/shared to the box and installed there:
+What it does: confirms ADB `device`, sets `global verifier_verify_adb_installs=0` + `secure install_non_market_apps=1`, maps `jio_premium_remote_setup_complete` (YouTube→SmartTube), installs bundled `apk/android-settings-shortcut.apk` + `apk/youtube-button-remap.apk`, enables accessibility service `com.jiostb.youtubebutton/.YouTubeButtonService` (**remote: YouTube 140/scan187→SmartTube, Netflix 137→Kartoons**), installs matching APKs from `user-apks/` (SmartTube, kartoons, netmirror Android TV, send files to tv, aptoide optional), grants `com.yablio.sendfilestotv` `REQUEST_INSTALL_PACKAGES` if present, prints missing items. **Safe to re-run.** Does NOT bundle third-party APKs and does NOT restore Jio launcher home-pin order.
 
 ```powershell
 adb shell "appops set com.yablio.sendfilestotv REQUEST_INSTALL_PACKAGES allow"   # Send Files to TV
@@ -202,6 +203,12 @@ Tested/installed on this JMSD200A (see §5 table). User-facing details in README
 - **Send Files to TV** — phone ⇄ box file sharing + direct APK install — STB + phone (grant `REQUEST_INSTALL_PACKAGES` after install; mind xapk splits, §7)
 - **Tellyscope** — control the box from the phone — **phone only** (companion remote app)
 - **Settings shortcut** — REQUIRED, see §5.1 — STB (`apk\android-settings-shortcut.apk`)
+
+## 6.5 Current box hardening (applied on this setup)
+
+- Disabled to reduce auto re-installs/re-enables (reversible `pm enable`): `com.jio.store`, `com.jio.appoptimizer`, `com.jio.backgroundscheduler`. Jio launcher may still restore home layout (its own config) — no reliable non-root fix except using a different launcher.
+- Stock `com.jio.yt` uninstalled/disabled for user 0.
+- **Tap-to-install APKs unreliable** on this ROM (no file `VIEW` handler). Reliable: `adb install`, Send Files to TV (session), or MT Manager/SAI via their own file picker. `com.android.packageinstaller` re-enabled to help session confirms. SAI “open with” can fail with `DISPLAY_NAME column is null` — use SAI’s internal picker.
 
 ## 7. Real errors encountered (and fixes)
 

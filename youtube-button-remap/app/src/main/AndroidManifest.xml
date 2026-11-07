@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <application android:label="YouTube Button → SmartTube" android:allowBackup="false">
+    <application android:label="Remote Button Remap" android:allowBackup="false">
         <service
             android:name=".YouTubeButtonService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:exported="true"
-            android:label="YouTube Button → SmartTube">
+            android:label="Remote Button Remap">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>

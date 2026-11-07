@@ -146,11 +146,11 @@ Verified working on JMSD200A — opens `com.android.tv.settings/.MainSettings` d
 
 > ✅ **Treat this as part of the unlock.** Without it you'll be doing the "My Music → Settings → Eject USB → Internal storage → Apps → settings gear" dance every time you need real settings.
 
-> ℹ️ The stock APK installer can't be re-enabled on this firmware — every install goes through ADB.
+> ℹ️ **Installing APKs on this firmware:** tap-to-open an `.apk` often shows “No app found” (the stock installer doesn’t handle the file `VIEW` intent). Reliable options: **ADB** (`adb install`), **Send Files to TV** from phone, or **MT Manager/SAI** using their *own* file picker (session install). `unlock/restore` re-enables the system package installer to help session prompts.
 
 ## 🔁 Restore this exact setup (one command)
 
-Once ADB is connected (`adb connect <STB_IP>:5555` → `device`), this repo can **restore the same apps/settings as this box** (SmartTube, Kartoons, NetMirror Android TV, Send Files to TV + install permission, Settings shortcut v1.3, **YouTube remote button → SmartTube remap** via accessibility service, and the required system flags).
+Once ADB is connected (`adb connect <STB_IP>:5555` → `device`), this repo can **restore the same apps/settings as this box** (SmartTube, Kartoons, NetMirror Android TV, Send Files to TV + install permission, Settings shortcut v1.3, **remote button remap: YouTube→SmartTube, Netflix→Kartoons** via accessibility service, and the required system flags).
 
 **Windows (PowerShell):**
 ```powershell
@@ -239,7 +239,7 @@ Want the full field-notes — every error we hit, exact Windows quirks, and the 
 | `unlock.sh` | ⚠️ **Stage 2 — bootloader unlock** via CVE‑2024‑31317 + Amlogic `setBootenv`. Can brick your box; read [`Housekeeping-UBoot.md`](Housekeeping-UBoot.md) first. |
 | `apk/android-settings-shortcut.apk` | **Prebuilt (8 KB)** "Settings" icon — opens stock `com.android.tv.settings` (no USB-gallery trick). Installed by default. |
 | `settings-shortcut/` | Source. `gradlew :app:assembleRelease`. |
-| `apk/youtube-button-remap.apk` | **Prebuilt** remap — remote **YouTube button** (Jio BLE, KEYCODE_F10/140 scan 187) launches **SmartTube** (accessibility service). Installed + enabled by default. |
+| `apk/youtube-button-remap.apk` | **Prebuilt** remap (accessibility service) — remote **YouTube** (KEYCODE_F10/140, scan 187) → **SmartTube**, **Netflix** (key 137) → **Kartoons**. Installed + enabled by default. |
 | `youtube-button-remap/` | Source. `gradlew :app:assembleRelease`. |
 | `restore-setup.ps1` / `restore-setup.sh` | **One-command restore** of this box's setup: system flags, bundled Settings shortcut + YouTube→SmartTube remap (enabled), installs matching APKs from `user-apks/`, grants Send Files to TV install permission. Safe to re-run. |
 | `setup-manifest.json` | Target state for restore (apps, packages, required settings, APK name patterns/sources). |
