@@ -114,11 +114,21 @@ adb devices        # → "192.168.137.x:5555   device"
 
 A "**Allow USB debugging**" dialog may appear on the TV screen — accept it if it does. On JMSD200A it often auto-authorizes.
 
-### 4. Install your apps
+### 4. Install your apps + the settings shortcut
 
 ```bash
 adb install "C:\path\to\your_app.apk"
 ```
+
+And immediately after unlocking, install the **stock Android Settings shortcut** — Jio's firmware hides the real Android (TV) Settings menu behind a fiddly USB-gallery trick, so this tiny (8 KB) app puts a working **"Android Settings"** icon in the launcher:
+
+```bash
+adb install "apk\android-settings-shortcut.apk"     # prebuilt, in this repo
+```
+
+The APK is verified working on JMSD200A — it opens `com.android.tv.settings/.MainSettings` directly (the stock menu with Network, Apps, Display, Developer options…), falling back to whatever the box wires `ACTION_SETTINGS` to. One tap, no USB trick. Source lives in [`settings-shortcut/`](settings-shortcut) — `gradlew :app:assembleRelease` rebuilds it.
+
+> ✅ **Treat this as part of the unlock.** Without it you'll be doing the "My Music → Settings → Eject USB → Internal storage → Apps → settings gear" dance every time you need real settings.
 
 > ℹ️ The stock APK installer can't be re-enabled on this firmware — every install goes through ADB.
 
@@ -191,6 +201,8 @@ Want the full field-notes — every error we hit, exact Windows quirks, and the 
 | `tls/dns/dnsmasq.conf` | Drop-in dnsmasq config: answers `*.jio.com` with your PC, forwards everything else upstream. The one DNS change the box needs. |
 | `mitm.py` | Plan‑B. ARP-poisons the box's gateway entry, relays its traffic to the real gateway, and forges DNS replies for any `jio.com` query. DNS-settings-proof. |
 | `unlock.sh` | ⚠️ **Stage 2 — bootloader unlock** via CVE‑2024‑31317 + Amlogic `setBootenv`. Can brick your box; read [`Housekeeping-UBoot.md`](Housekeeping-UBoot.md) first. |
+| `apk/android-settings-shortcut.apk` | **Prebuilt tiny app (8 KB)** that adds an "Android Settings" icon to the launcher and opens the stock `com.android.tv.settings` — no USB-gallery trick needed. Install during unlock (see step 4). |
+| `settings-shortcut/` | Source of the above (Gradle project, plain Java, 30 lines). `gradlew :app:assembleRelease`. |
 | `pull_boot.sh` | Extracts `boot.img` for a Magisk patch (Stage 2 continuation). |
 | `rootshell2.jar`, `bootenv.jar` | Helper payloads stage 2 pushes to the box (root shell + U‑Boot env writer). |
 | `src/` | PoC source (BootEnv/binder helpers) for the curious. |

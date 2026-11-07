@@ -146,6 +146,16 @@ Verified installs on JMSD200A (32-bit ARM, ABI `armeabi-v7a` — do NOT use arm6
 | SmartTube 32.71 (armeabi-v7a) | `org.smarttube.stable` | github.com/yuliskov/SmartTube/releases |
 | Kartoons | `com.kartoons.app` | obtained APK |
 
+### 5.1 REQUIRED post-unlock step — Android Settings shortcut
+
+The stock Android TV Settings (`com.android.tv.settings/.MainSettings`) is installed on the box but hidden by the Jio launcher. Without a shortcut, every settings change requires the USB-gallery trick. **This install is part of the unlock, not optional:**
+
+```powershell
+adb -s <STB_IP>:5555 install -r "apk\android-settings-shortcut.apk"   # prebuilt in repo root
+```
+
+Package: `com.jiostb.settingshortcut` — 8 KB, launcher label "Android Settings". Verified on JMSD200A: opens `com.android.tv.settings/.MainSettings` directly (`dumpsys activity` shows it as `mResumedActivity`). Source in `settings-shortcut/` — rebuild with `.\gradlew.bat :app:assembleRelease`. Do NOT uninstall it after unlock; reset wipes it (reinstall after factory reset).
+
 **Direct (non-ADB) installs** — give the receiving app permission to install unknown apps,
 then APks can be sent/shared to the box and installed there:
 
@@ -164,6 +174,7 @@ adb shell "settings put global verifier_verify_adb_installs 0"                  
 - **NetMirror** — movies/series — STB
 - **Send Files to TV** — phone ⇄ box file sharing + direct APK install — STB + phone
 - **Tellyscope** — control the box from the phone — **phone only** (companion remote app)
+- **Android Settings shortcut** — REQUIRED, see §5.1 — STB (`apk\android-settings-shortcut.apk`)
 
 ## 7. Real errors encountered (and fixes)
 
