@@ -178,6 +178,7 @@ adb shell "settings put global verifier_verify_adb_installs 0"                  
 | UDP/53 conflicts with ICS DNS proxy | Windows ICS holds `0.0.0.0:53` | Bind dnsmasq **specifically** to `192.168.137.1:53` (see §1, method B). |
 | `pktmon` captures / firewall | needs elevation | UAC one-liners via `Start-Process -Verb RunAs`. |
 | `appops` → `No UID for ...` | Package not installed on the box | Install the app first, then grant. |
+| APKpure `.xapk` app crashes instantly (`Resources$NotFoundException`) | `.xapk` is a split bundle — installing just the base APK misses the config splits | Unzip the xapk and `adb install-multiple` base + `config.en.apk` + density config; **drop any `config.arm64_v8a.apk` on this 32-bit box** or it fails with `INSTALL_FAILED_NO_MATCHING_ABIS`. |
 | Factory reset wipes all per-user changes | expected | Re-run the whole unlock after any reset. |
 
 ## 8. Stage 2 — do NOT do this blindly
