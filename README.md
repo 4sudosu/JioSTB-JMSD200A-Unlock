@@ -150,7 +150,7 @@ Verified working on JMSD200A — opens `com.android.tv.settings/.MainSettings` d
 
 ## 🔁 Restore this exact setup (one command)
 
-Once ADB is connected (`adb connect <STB_IP>:5555` → `device`), this repo can **restore the same apps/settings as this box** (SmartTube, Kartoons, NetMirror Android TV, Send Files to TV + install permission, Settings shortcut v1.3, **YouTube remote button → SmartTube**, and the required system flags).
+Once ADB is connected (`adb connect <STB_IP>:5555` → `device`), this repo can **restore the same apps/settings as this box** (SmartTube, Kartoons, NetMirror Android TV, Send Files to TV + install permission, Settings shortcut v1.3, **YouTube remote button → SmartTube remap** via accessibility service, and the required system flags).
 
 **Windows (PowerShell):**
 ```powershell
@@ -230,15 +230,18 @@ Want the full field-notes — every error we hit, exact Windows quirks, and the 
 | File | What it does |
 |---|---|
 | `stage1.sh` | **The main script.** Finds your box in fake-ACS, queues TR‑069 tasks (USB debug on, FOTA off, downgrade enable), then optionally connects ADB and uninstalls Jio bloatware. Run with `--tasks-only` to just queue the payload, `--list-devices` to see the box, `--stb-ip` to skip discovery. |
-| `unlock-setupbox.ps1` | **One-command unlock (Windows).** Brings up GenieACS + `pass_front` + dnsmasq (Method B), watches for the STB, runs Stage 1, polls ADB, installs Settings shortcut — and guides you through the few manual steps. Use this for "clone & unlock SetupBox". |
+| `unlock-setupbox.ps1` | **One-command unlock (Windows).** Brings up GenieACS + `pass_front` + dnsmasq (Method B), watches for the STB, runs Stage 1, polls ADB, applies defaults (Settings shortcut + YouTube→SmartTube remap, basic flags). Use this for "clone & unlock SetupBox". |
 | `tls/pass_front.py` | TLS front-end. Terminates the box's HTTPS on `:8443`/`:9443` with the RILROOTCA chain, handles session-cookie routing and the Jio "network check" gate spoof, then proxies into GenieACS. Start it before running stage1. |
 | `tls/docker-compose.yml` | GenieACS (open-source TR‑069/CWMP ACS) + MongoDB. Ports: 7547 CWMP, 7557 REST API (NBI), 3000 web UI (admin/admin). |
 | `tls/acs*.pem`, `rilrootca.pem`, … | The Jio-style TLS cert chain pass_front.py needs so the box's TLS handshake doesn't fail. |
 | `tls/dns/dnsmasq.conf` | Drop-in dnsmasq config: answers `*.jio.com` with your PC, forwards everything else upstream. The one DNS change the box needs. |
 | `mitm.py` | Plan‑B. ARP-poisons the box's gateway entry, relays its traffic to the real gateway, and forges DNS replies for any `jio.com` query. DNS-settings-proof. |
 | `unlock.sh` | ⚠️ **Stage 2 — bootloader unlock** via CVE‑2024‑31317 + Amlogic `setBootenv`. Can brick your box; read [`Housekeeping-UBoot.md`](Housekeeping-UBoot.md) first. |
-| `apk/android-settings-shortcut.apk` | **Prebuilt tiny app (8 KB)** that adds an "Android Settings" icon to the launcher and opens the stock `com.android.tv.settings` — no USB-gallery trick needed. Install during unlock (see step 4). |
-| `restore-setup.ps1` / `restore-setup.sh` | **One-command restore** of this box's setup: applies system flags, installs the bundled Settings shortcut, installs any matching APKs from `user-apks/` (you provide), grants Send Files to TV install permission. Safe to re-run. |
+| `apk/android-settings-shortcut.apk` | **Prebuilt (8 KB)** "Settings" icon — opens stock `com.android.tv.settings` (no USB-gallery trick). Installed by default. |
+| `settings-shortcut/` | Source. `gradlew :app:assembleRelease`. |
+| `apk/youtube-button-remap.apk` | **Prebuilt** remap — remote **YouTube button** (Jio BLE, KEYCODE_F10/140 scan 187) launches **SmartTube** (accessibility service). Installed + enabled by default. |
+| `youtube-button-remap/` | Source. `gradlew :app:assembleRelease`. |
+| `restore-setup.ps1` / `restore-setup.sh` | **One-command restore** of this box's setup: system flags, bundled Settings shortcut + YouTube→SmartTube remap (enabled), installs matching APKs from `user-apks/`, grants Send Files to TV install permission. Safe to re-run. |
 | `setup-manifest.json` | Target state for restore (apps, packages, required settings, APK name patterns/sources). |
 | `user-apks/` (gitignored) | Drop your own `armeabi-v7a` APKs here for restore (not committed). |
 | `pull_boot.sh` | Extracts `boot.img` for a Magisk patch (Stage 2 continuation). |

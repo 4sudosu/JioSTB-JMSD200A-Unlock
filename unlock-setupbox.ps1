@@ -69,10 +69,13 @@ while ((Get-Date) -lt $deadline -and -not $fired) {
     }
     adb devices | Out-Host
     if ((adb -s "${StbIp}:5555" get-state 2>&1) -match 'device') {
-      Write-Host "`nADB READY. Applying defaults (Settings shortcut, YouTube remote -> SmartTube)..." -ForegroundColor Green
+      Write-Host "`nADB READY. Applying defaults..." -ForegroundColor Green
       adb -s "${StbIp}:5555" install -r "$root\apk\android-settings-shortcut.apk" | Out-Host
+      adb -s "${StbIp}:5555" install -r "$root\apk\youtube-button-remap.apk" | Out-Host
       adb -s "${StbIp}:5555" shell settings put global verifier_verify_adb_installs 0 2>&1 | Out-Null
       adb -s "${StbIp}:5555" shell settings put secure install_non_market_apps 1 2>&1 | Out-Null
+      adb -s "${StbIp}:5555" shell settings put secure enabled_accessibility_services com.jiostb.youtubebutton/.YouTubeButtonService 2>&1 | Out-Null
+      adb -s "${StbIp}:5555" shell settings put secure accessibility_enabled 1 2>&1 | Out-Null
       $rk = '[{"applicationName":"Hotstar","keycode":138,"packageName":"in.startv.hotstar"},{"applicationName":"Netflix","keycode":137,"packageName":"com.netflix.ninja"},{"applicationName":"PrimeVideo","keycode":134,"packageName":"com.amazon.amazonvideo.livingroom"},{"applicationName":"SonyLiv","keycode":141,"packageName":"com.jiotv.sonyliv"},{"applicationName":"Zee5","keycode":142,"packageName":"com.zee5.aosp"},{"applicationName":"SmartTube","keycode":140,"packageName":"org.smarttube.stable"}]'
       $tmp = Join-Path $env:TEMP "jio_rk.json"; $rsh = Join-Path $env:TEMP "jio_rk.sh"
       [IO.File]::WriteAllText($tmp,$rk); [IO.File]::WriteAllText($rsh,'settings put global jio_premium_remote_setup_complete "$(cat /sdcard/jio_rk.json)"'+"`n")
@@ -80,7 +83,7 @@ while ((Get-Date) -lt $deadline -and -not $fired) {
       adb -s "${StbIp}:5555" push $rsh /data/local/tmp/jio_rk.sh 2>&1 | Out-Null
       adb -s "${StbIp}:5555" shell "sh /data/local/tmp/jio_rk.sh" 2>&1 | Out-Null
       Remove-Item $tmp,$rsh -ErrorAction SilentlyContinue
-      Write-Host "  YouTube remote button (key 140) -> SmartTube (org.smarttube.stable). Keep stock YouTube uninstalled." -ForegroundColor Green
+      Write-Host "  Settings shortcut + YouTube button -> SmartTube remap enabled. Keep stock YouTube uninstalled." -ForegroundColor Green
       Write-Host "Optional: run .\restore-setup.ps1 -Stb ${StbIp}:5555 to restore apps/settings." -ForegroundColor Cyan
     } else {
       Write-Host "ADB not 'device' yet - accept the TV dialog if shown, or wait one more Inform cycle (~6 min), then: adb connect ${StbIp}:5555" -ForegroundColor Yellow

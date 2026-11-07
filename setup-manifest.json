@@ -6,7 +6,11 @@
       "verifier_verify_adb_installs": "0",
       "jio_premium_remote_setup_complete": "[{\"applicationName\":\"Hotstar\",\"keycode\":138,\"packageName\":\"in.startv.hotstar\"},{\"applicationName\":\"Netflix\",\"keycode\":137,\"packageName\":\"com.netflix.ninja\"},{\"applicationName\":\"PrimeVideo\",\"keycode\":134,\"packageName\":\"com.amazon.amazonvideo.livingroom\"},{\"applicationName\":\"SonyLiv\",\"keycode\":141,\"packageName\":\"com.jiotv.sonyliv\"},{\"applicationName\":\"Zee5\",\"keycode\":142,\"packageName\":\"com.zee5.aosp\"},{\"applicationName\":\"SmartTube\",\"keycode\":140,\"packageName\":\"org.smarttube.stable\"}]"
     },
-    "secure": { "install_non_market_apps": "1" },
+    "secure": {
+      "install_non_market_apps": "1",
+      "enabled_accessibility_services": "com.jiostb.youtubebutton/.YouTubeButtonService",
+      "accessibility_enabled": "1"
+    },
     "appops": [
       { "package": "com.yablio.sendfilestotv", "op": "REQUEST_INSTALL_PACKAGES", "mode": "allow", "when": "after Send Files to TV is installed" }
     ]
@@ -16,7 +20,8 @@
     { "name": "Kartoons", "package": "com.kartoons.app", "required": true, "abi": "armeabi-v7a", "source": "trusted source (Kartoons APK)", "local_pattern": "*kartoons*.apk" },
     { "name": "NetMirror (Android TV)", "package": "app.netmirror.newtv", "required": true, "abi": "armeabi-v7a", "source": "trusted source — download the ANDROID TV build (not phone/PC/FireStick/Smart TV)", "local_pattern": "*netmirror*.apk" },
     { "name": "Send Files to TV", "package": "com.yablio.sendfilestotv", "required": true, "abi": "armeabi-v7a", "source": "Play Store on phone; on box use APK. If .xapk: unzip and install-multiple base + config.en + density split, SKIP config.arm64_v8a on this 32-bit box.", "local_pattern": "*send*files*tv*.apk" },
-    { "name": "Settings shortcut", "package": "com.jiostb.settingshortcut", "required": true, "bundled": "apk/android-settings-shortcut.apk", "note": "REQUIRED — opens stock com.android.tv.settings/.MainSettings" }
+    { "name": "Settings shortcut", "package": "com.jiostb.settingshortcut", "required": true, "bundled": "apk/android-settings-shortcut.apk", "note": "REQUIRED — opens stock com.android.tv.settings/.MainSettings" },
+    { "name": "YouTube button → SmartTube", "package": "com.jiostb.youtubebutton", "required": true, "bundled": "apk/youtube-button-remap.apk", "note": "REQUIRED for remote: accessibility service remaps YouTube button (KEYCODE_F10/140, scan 187) to SmartTube" }
   ],
   "notes": [
     "Home-screen pin order is controlled by Jio launcher private config and is not restored by this script.",

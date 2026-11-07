@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application android:label="YouTube Button → SmartTube" android:allowBackup="false">
+        <service
+            android:name=".YouTubeButtonService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="true"
+            android:label="YouTube Button → SmartTube">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/yt_button_service" />
+        </service>
+        <!-- No launcher icon needed; enable the accessibility service after install. -->
+    </application>
+</manifest>

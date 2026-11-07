@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="svc_desc">Remaps the remote YouTube button (F17) to launch SmartTube on Jio STB.</string>
+</resources>

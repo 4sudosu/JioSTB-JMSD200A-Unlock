@@ -1,4 +1,5 @@
 user-apks/
 *.apk
 !apk/android-settings-shortcut.apk
+!apk/youtube-button-remap.apk
 pass_front.log

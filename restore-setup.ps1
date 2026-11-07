@@ -23,8 +23,12 @@ adb -s $Stb shell "sh /data/local/tmp/jio_rk.sh" 2>&1 | Out-Null
 Remove-Item $tmp,$rsh -ErrorAction SilentlyContinue
 Write-Host "  verifier=0, install_non_market_apps=1, YouTube remote button -> SmartTube"
 
-Write-Host "[2/4] Settings shortcut (bundled, REQUIRED)"
-adb -s $Stb install -r "$PSScriptRoot\apk\android-settings-shortcut.apk"
+Write-Host "[2/4] Bundled required apps (Settings shortcut, YouTube button -> SmartTube)"
+adb -s $Stb install -r "$PSScriptRoot\apk\android-settings-shortcut.apk" | Out-Null
+adb -s $Stb install -r "$PSScriptRoot\apk\youtube-button-remap.apk" | Out-Null
+adb -s $Stb shell settings put secure enabled_accessibility_services com.jiostb.youtubebutton/.YouTubeButtonService | Out-Null
+adb -s $Stb shell settings put secure accessibility_enabled 1 | Out-Null
+Write-Host "  Settings shortcut + YouTube button remap (accessibility) installed/enabled"
 
 function Install-Match($name, $pattern) {
   $f = Get-ChildItem -Path $ApkDir -Filter $pattern -File -ErrorAction SilentlyContinue | Select-Object -First 1

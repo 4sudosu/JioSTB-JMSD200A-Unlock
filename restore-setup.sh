@@ -23,8 +23,12 @@ RK='[{"applicationName":"Hotstar","keycode":138,"packageName":"in.startv.hotstar
 printf '%s' "$RK" | adb -s "$STB" shell "cat > /sdcard/jio_rk.json && settings put global jio_premium_remote_setup_complete \"\$(cat /sdcard/jio_rk.json)\""
 echo "  verifier=0, install_non_market_apps=1, YouTube remote button -> SmartTube"
 
-echo "[2/4] Settings shortcut (bundled, REQUIRED)"
+echo "[2/4] Bundled required apps (Settings shortcut, YouTube button -> SmartTube)"
 adb -s "$STB" install -r "$ROOT/apk/android-settings-shortcut.apk"
+adb -s "$STB" install -r "$ROOT/apk/youtube-button-remap.apk"
+adb -s "$STB" shell settings put secure enabled_accessibility_services com.jiostb.youtubebutton/.YouTubeButtonService
+adb -s "$STB" shell settings put secure accessibility_enabled 1
+echo "  Settings shortcut + YouTube button remap (accessibility) installed/enabled"
 
 install_match() {
   name="$1"; pattern="$2"
