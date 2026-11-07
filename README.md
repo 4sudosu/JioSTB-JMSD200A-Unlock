@@ -132,6 +132,25 @@ Verified working on JMSD200A — opens `com.android.tv.settings/.MainSettings` d
 
 > ℹ️ The stock APK installer can't be re-enabled on this firmware — every install goes through ADB.
 
+## 🔁 Restore this exact setup (one command)
+
+Once ADB is connected (`adb connect <STB_IP>:5555` → `device`), this repo can **restore the same apps/settings as this box** (SmartTube, Kartoons, NetMirror Android TV, Send Files to TV + install permission, Settings shortcut v1.3, and the required system flags).
+
+**Windows (PowerShell):**
+```powershell
+.\restore-setup.ps1 -Stb 192.168.137.89:5555
+```
+**Git Bash:**
+```bash
+./restore-setup.sh 192.168.137.89:5555
+```
+
+Put any APKs you provide yourself into `user-apks/` (gitignored). The script installs what's there and tells you what's missing — safe to re-run. Exact target state + download hints: [`setup-manifest.json`](setup-manifest.json). Third-party APKs are **not** bundled; the prebuilt Settings shortcut is (`apk/android-settings-shortcut.apk`).
+
+**Tell your AI (copy-paste):** *"In this repo, run restore-setup for my Jio STB at `<STB_IP>:5555`. Apply settings from setup-manifest.json, install apk/android-settings-shortcut.apk, install any matching APKs from user-apks/, and grant Send Files to TV REQUEST_INSTALL_PACKAGES if present. Show what's missing."*
+
+> Note: Jio launcher home-screen pin order isn't auto-restored (the launcher keeps its own config). Factory reset wipes per-user state — re-run after reset.
+
 ## 📲 Recommended APKs
 
 Apps that work well on this box (`armeabi-v7a` — always pick the **32-bit ARM** build when an app offers multiple APKs):
@@ -202,7 +221,9 @@ Want the full field-notes — every error we hit, exact Windows quirks, and the 
 | `mitm.py` | Plan‑B. ARP-poisons the box's gateway entry, relays its traffic to the real gateway, and forges DNS replies for any `jio.com` query. DNS-settings-proof. |
 | `unlock.sh` | ⚠️ **Stage 2 — bootloader unlock** via CVE‑2024‑31317 + Amlogic `setBootenv`. Can brick your box; read [`Housekeeping-UBoot.md`](Housekeeping-UBoot.md) first. |
 | `apk/android-settings-shortcut.apk` | **Prebuilt tiny app (8 KB)** that adds an "Android Settings" icon to the launcher and opens the stock `com.android.tv.settings` — no USB-gallery trick needed. Install during unlock (see step 4). |
-| `settings-shortcut/` | Source of the above (Gradle project, plain Java, 30 lines). `gradlew :app:assembleRelease`. |
+| `restore-setup.ps1` / `restore-setup.sh` | **One-command restore** of this box's setup: applies system flags, installs the bundled Settings shortcut, installs any matching APKs from `user-apks/` (you provide), grants Send Files to TV install permission. Safe to re-run. |
+| `setup-manifest.json` | Target state for restore (apps, packages, required settings, APK name patterns/sources). |
+| `user-apks/` (gitignored) | Drop your own `armeabi-v7a` APKs here for restore (not committed). |
 | `pull_boot.sh` | Extracts `boot.img` for a Magisk patch (Stage 2 continuation). |
 | `rootshell2.jar`, `bootenv.jar` | Helper payloads stage 2 pushes to the box (root shell + U‑Boot env writer). |
 | `src/` | PoC source (BootEnv/binder helpers) for the curious. |

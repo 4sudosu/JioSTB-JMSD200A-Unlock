@@ -1,0 +1,23 @@
+{
+  "device": "JMSD200A (Android 11, armeabi-v7a)",
+  "adb_target_example": "192.168.137.89:5555",
+  "system_settings": {
+    "global": { "verifier_verify_adb_installs": "0" },
+    "secure": { "install_non_market_apps": "1" },
+    "appops": [
+      { "package": "com.yablio.sendfilestotv", "op": "REQUEST_INSTALL_PACKAGES", "mode": "allow", "when": "after Send Files to TV is installed" }
+    ]
+  },
+  "apps": [
+    { "name": "SmartTube", "package": "org.smarttube.stable", "required": true, "abi": "armeabi-v7a", "source": "https://github.com/yuliskov/SmartTube/releases (pick *_armeabi-v7a.apk)", "local_pattern": "*SmartTube*armeabi-v7a*.apk" },
+    { "name": "Kartoons", "package": "com.kartoons.app", "required": true, "abi": "armeabi-v7a", "source": "trusted source (Kartoons APK)", "local_pattern": "*kartoons*.apk" },
+    { "name": "NetMirror (Android TV)", "package": "app.netmirror.newtv", "required": true, "abi": "armeabi-v7a", "source": "trusted source — download the ANDROID TV build (not phone/PC/FireStick/Smart TV)", "local_pattern": "*netmirror*.apk" },
+    { "name": "Send Files to TV", "package": "com.yablio.sendfilestotv", "required": true, "abi": "armeabi-v7a", "source": "Play Store on phone; on box use APK. If .xapk: unzip and install-multiple base + config.en + density split, SKIP config.arm64_v8a on this 32-bit box.", "local_pattern": "*send*files*tv*.apk" },
+    { "name": "Settings shortcut", "package": "com.jiostb.settingshortcut", "required": true, "bundled": "apk/android-settings-shortcut.apk", "note": "REQUIRED — opens stock com.android.tv.settings/.MainSettings" }
+  ],
+  "notes": [
+    "Home-screen pin order is controlled by Jio launcher private config and is not restored by this script.",
+    "Factory reset wipes per-user state — re-run restore after reset.",
+    "All APKs must be armeabi-v7a (32-bit). Do not use arm64."
+  ]
+}

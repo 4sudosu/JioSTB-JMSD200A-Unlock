@@ -1,0 +1,4 @@
+user-apks/
+*.apk
+!apk/android-settings-shortcut.apk
+pass_front.log

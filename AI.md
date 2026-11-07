@@ -159,7 +159,18 @@ adb -s <STB_IP>:5555 install -r "apk\android-settings-shortcut.apk"   # prebuilt
 
 Package: `com.jiostb.settingshortcut` (v1.3) — 8 KB, launcher label "Settings" (blue text icon). Verified on JMSD200A: opens `com.android.tv.settings/.MainSettings` directly (`dumpsys activity` shows it as `mResumedActivity`). Source in `settings-shortcut/` — rebuild with `.\gradlew.bat :app:assembleRelease`. Do NOT uninstall it after unlock; reset wipes it (reinstall after factory reset).
 
-**Direct (non-ADB) installs** — give the receiving app permission to install unknown apps,
+### 5.2 One-command restore (replay this setup)
+
+This repo can restore the current box state (see `setup-manifest.json`). Use when an AI/user says "make settings like now / restore my setup":
+
+```powershell
+# Windows
+.\restore-setup.ps1 -Stb <STB_IP>:5555
+# Git Bash
+./restore-setup.sh <STB_IP>:5555
+```
+
+What it does: confirms ADB `device`, sets `global verifier_verify_adb_installs=0` + `secure install_non_market_apps=1`, installs bundled `apk/android-settings-shortcut.apk`, installs any matching APKs found in `user-apks/` (SmartTube `*armeabi-v7a*`, kartoons, netmirror Android TV, send files to tv), grants `com.yablio.sendfilestotv REQUEST_INSTALL_PACKAGES=allow` if present, prints missing items. **Safe to re-run.** Does NOT bundle third-party APKs and does NOT restore Jio launcher home-pin order (launcher-owned config).
 then APks can be sent/shared to the box and installed there:
 
 ```powershell
