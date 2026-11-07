@@ -5,6 +5,22 @@
 
 ![Platform](https://img.shields.io/badge/platform-Windows-blue) ![Android](https://img.shields.io/badge/Android%20TV-11-orange) ![Firmware](https://img.shields.io/b/firmware/patch%202024--06--05-green) ![License](https://img.shields.io/badge/license-Apache%202.0-red)
 
+## ⚡ Fastest way (same-model STB: JMSD200A)
+
+> **Clone this repo and unlock the SetupBox — that’s it.** (You/your AI runs one script; you do 3 manual steps: PC hotspot on, connect STB, reboot STB.)
+
+```powershell
+git clone https://github.com/4sudosu/JioSTB-JMSD200A-Unlock.git
+cd JioSTB-JMSD200A-Unlock
+.\unlock-setupbox.ps1
+```
+
+**Tell your AI:** *"Clone https://github.com/4sudosu/JioSTB-JMSD200A-Unlock and unlock my JMSD200A SetupBox (use unlock-setupbox.ps1, Method B PC hotspot). Walk me through the manual steps."*
+
+**Prereqs (install once):** [Docker Desktop](https://docs.docker.com/desktop/setup/install/windows-install/) (running), [Python 3](https://www.python.org/downloads/), [Git for Windows](https://gitforwindows.org/), [ADB platform-tools](https://developer.android.com/tools/releases/platform-tools) on PATH. `python -m pip install pycryptodome`
+
+What the script automates: GenieACS + TLS front-end + DNS spoof (Method B, `192.168.137.1`), watches for the STB, runs Stage 1 payload, polls ADB, installs the Settings shortcut. What **you** do when prompted: phone hotspot OFF → PC Mobile Hotspot ON → connect STB to PC hotspot (DHCP) → reboot STB → accept "Allow USB debugging" on TV if shown. After unlock: `.\restore-setup.ps1 -Stb <STB_IP>:5555` restores apps/settings. Full details below.
+
 ---
 
 ## ⚠️ Read this first
@@ -214,6 +230,7 @@ Want the full field-notes — every error we hit, exact Windows quirks, and the 
 | File | What it does |
 |---|---|
 | `stage1.sh` | **The main script.** Finds your box in fake-ACS, queues TR‑069 tasks (USB debug on, FOTA off, downgrade enable), then optionally connects ADB and uninstalls Jio bloatware. Run with `--tasks-only` to just queue the payload, `--list-devices` to see the box, `--stb-ip` to skip discovery. |
+| `unlock-setupbox.ps1` | **One-command unlock (Windows).** Brings up GenieACS + `pass_front` + dnsmasq (Method B), watches for the STB, runs Stage 1, polls ADB, installs Settings shortcut — and guides you through the few manual steps. Use this for "clone & unlock SetupBox". |
 | `tls/pass_front.py` | TLS front-end. Terminates the box's HTTPS on `:8443`/`:9443` with the RILROOTCA chain, handles session-cookie routing and the Jio "network check" gate spoof, then proxies into GenieACS. Start it before running stage1. |
 | `tls/docker-compose.yml` | GenieACS (open-source TR‑069/CWMP ACS) + MongoDB. Ports: 7547 CWMP, 7557 REST API (NBI), 3000 web UI (admin/admin). |
 | `tls/acs*.pem`, `rilrootca.pem`, … | The Jio-style TLS cert chain pass_front.py needs so the box's TLS handshake doesn't fail. |

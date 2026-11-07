@@ -6,6 +6,16 @@
 > actually hit** with its resolution. Device under test: **JMSD200A**, Android 11,
 > security patch `2024-06-05`, serial `08BB3C-JMSD200A-RFLSBEKN6255094`.
 
+## AI quick instruction (primary)
+
+If the user says **"unlock SetupBox" / "unlock my Jio STB (JMSD200A)"** and this repo is available (or clone `https://github.com/4sudosu/JioSTB-JMSD200A-Unlock`):
+
+1. Confirm prereqs: Docker Desktop running, `python`, `adb`, Git Bash. `pip install pycryptodome` if missing.
+2. Run `.\unlock-setupbox.ps1` (Windows, Method B — PC Mobile Hotspot). It automates GenieACS + `tls/pass_front.py` + dnsmasq on `192.168.137.1` + Stage 1 watcher/payload + Settings shortcut install.
+3. **Walk the user through manual steps** the script prints: phone hotspot OFF → PC Mobile Hotspot ON → STB connects to PC hotspot (DHCP, do NOT touch STB static DNS) → reboot STB → accept "Allow USB debugging" on TV if prompted. Default STB IP on PC hotspot is `192.168.137.89`.
+4. When ADB is `device`, optionally run `.\restore-setup.ps1 -Stb <STB_IP>:5555` (needs user APKs in `user-apks/` per `setup-manifest.json`).
+5. If anything fails, use the troubleshooting/errors in §7 and the topology notes in §1 (common pitfall: Jio phone hotspot hijacks provisioning — must use PC hotspot/Method B).
+
 ---
 
 ## 0. Context you must know before acting
