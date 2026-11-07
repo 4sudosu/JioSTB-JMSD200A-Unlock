@@ -139,12 +139,15 @@ adb connect <STB_IP>:5555
 adb -s <STB_IP>:5555 install -r "<path>\app.apk"   # Success = done
 ```
 
-Verified installs on JMSD200A (32-bit ARM, ABI `armeabi-v7a` — do NOT use arm64 APKs):
+Verified installs on JMSD200A (32-bit ARM, ABI `armeabi-v7a` — do NOT use arm64 APKs) — **current setup on this box**:
 
-| App | Package | Source |
+| App | Package | Notes |
 |---|---|---|
-| SmartTube 32.71 (armeabi-v7a) | `org.smarttube.stable` | github.com/yuliskov/SmartTube/releases |
+| SmartTube 32.71 (armeabi-v7a) | `org.smarttube.stable` | YouTube w/o ads — [releases](https://github.com/yuliskov/SmartTube/releases) |
 | Kartoons | `com.kartoons.app` | obtained APK |
+| NetMirror (Android TV) | `app.netmirror.newtv` | movies/series |
+| Send Files to TV 1.4.22 | `com.yablio.sendfilestotv` | **install from split bundle correctly** (see §7 xapk row); `REQUEST_INSTALL_PACKAGES` granted for direct installs |
+| Settings shortcut v1.3 | `com.jiostb.settingshortcut` | REQUIRED — opens stock `com.android.tv.settings/.MainSettings` (see §5.1) |
 
 ### 5.1 REQUIRED post-unlock step — Android Settings shortcut
 
@@ -154,7 +157,7 @@ The stock Android TV Settings (`com.android.tv.settings/.MainSettings`) is insta
 adb -s <STB_IP>:5555 install -r "apk\android-settings-shortcut.apk"   # prebuilt in repo root
 ```
 
-Package: `com.jiostb.settingshortcut` — 8 KB, launcher label "Android Settings". Verified on JMSD200A: opens `com.android.tv.settings/.MainSettings` directly (`dumpsys activity` shows it as `mResumedActivity`). Source in `settings-shortcut/` — rebuild with `.\gradlew.bat :app:assembleRelease`. Do NOT uninstall it after unlock; reset wipes it (reinstall after factory reset).
+Package: `com.jiostb.settingshortcut` (v1.3) — 8 KB, launcher label "Settings" (blue text icon). Verified on JMSD200A: opens `com.android.tv.settings/.MainSettings` directly (`dumpsys activity` shows it as `mResumedActivity`). Source in `settings-shortcut/` — rebuild with `.\gradlew.bat :app:assembleRelease`. Do NOT uninstall it after unlock; reset wipes it (reinstall after factory reset).
 
 **Direct (non-ADB) installs** — give the receiving app permission to install unknown apps,
 then APks can be sent/shared to the box and installed there:
@@ -167,14 +170,16 @@ adb shell "settings put global verifier_verify_adb_installs 0"                  
 > Must run **after** the package is installed (appops needs an existing UID; error
 > `No UID for <pkg> in user 0` means the app isn't installed yet).
 
-## 6. Recommended APKs (see README for the user-facing table)
+## 6. Recommended APKs (this box's setup)
+
+Tested/installed on this JMSD200A (see §5 table). User-facing details in README.
 
 - **SmartTube** — YouTube without ads — STB
 - **Kartoons** — cartoons for kids — STB
-- **NetMirror** — movies/series — STB
-- **Send Files to TV** — phone ⇄ box file sharing + direct APK install — STB + phone
+- **NetMirror** (Android TV build) — movies/series — STB
+- **Send Files to TV** — phone ⇄ box file sharing + direct APK install — STB + phone (grant `REQUEST_INSTALL_PACKAGES` after install; mind xapk splits, §7)
 - **Tellyscope** — control the box from the phone — **phone only** (companion remote app)
-- **Android Settings shortcut** — REQUIRED, see §5.1 — STB (`apk\android-settings-shortcut.apk`)
+- **Settings shortcut** — REQUIRED, see §5.1 — STB (`apk\android-settings-shortcut.apk`)
 
 ## 7. Real errors encountered (and fixes)
 

@@ -120,13 +120,13 @@ A "**Allow USB debugging**" dialog may appear on the TV screen — accept it if 
 adb install "C:\path\to\your_app.apk"
 ```
 
-And immediately after unlocking, install the **stock Android Settings shortcut** — Jio's firmware hides the real Android (TV) Settings menu behind a fiddly USB-gallery trick, so this tiny (8 KB) app puts a working **"Android Settings"** icon in the launcher:
+And immediately after unlocking, install the **stock Android Settings shortcut** — Jio's firmware hides the real Android (TV) Settings menu behind a fiddly USB-gallery trick, so this tiny app puts a working **"Settings"** icon in the launcher:
 
 ```bash
-adb install "apk\android-settings-shortcut.apk"     # prebuilt, in this repo
+adb install "apk\android-settings-shortcut.apk"     # prebuilt, v1.3
 ```
 
-The APK is verified working on JMSD200A — it opens `com.android.tv.settings/.MainSettings` directly (the stock menu with Network, Apps, Display, Developer options…), falling back to whatever the box wires `ACTION_SETTINGS` to. One tap, no USB trick. Source lives in [`settings-shortcut/`](settings-shortcut) — `gradlew :app:assembleRelease` rebuilds it.
+Verified working on JMSD200A — opens `com.android.tv.settings/.MainSettings` directly (Network, Apps, Display, Developer options…). One tap, no USB trick. Source: [`settings-shortcut/`](settings-shortcut).
 
 > ✅ **Treat this as part of the unlock.** Without it you'll be doing the "My Music → Settings → Eject USB → Internal storage → Apps → settings gear" dance every time you need real settings.
 
@@ -139,9 +139,9 @@ Apps that work well on this box (`armeabi-v7a` — always pick the **32-bit ARM*
 | App | Purpose | Install where | Where to get it |
 |---|---|---|---|
 | **SmartTube** | YouTube with **no ads** + background play + SponsorBlock | STB | [github.com/yuliskov/SmartTube/releases](https://github.com/yuliskov/SmartTube/releases) → pick `armeabi-v7a` |
-| **NetMirror** | Latest movies & web series | STB | search "NetMirror APK" — get it from a source you trust |
+| **NetMirror** | Latest movies & web series | STB | pick the **Android TV** build (not phone/PC/FireStick/Smart TV). Get it from a source you trust. |
 | **Kartoons** | Cartoons for kids | STB | search "Kartoons APK" — get it from a source you trust |
-| **Send Files to TV** | Phone ⇄ TV file sharing over Wi‑Fi, **and** direct APK installs on the box (see below) | STB **and** phone | Play Store on phone; the `com.yablio.sendfilestotv` APK on the box |
+| **Send Files to TV** | Phone ⇄ TV file sharing over Wi‑Fi, **and** direct APK installs on the box (see below) | STB **and** phone | Play Store on phone; on the box install `com.yablio.sendfilestotv`. If you have an `.xapk`, unzip & `adb install-multiple` base + `config.en` + density split — **skip `config.arm64_v8a`** on this 32-bit box or it crashes/mis-installs. |
 | **Tellyscope** | Control the STB from your phone (remote) | **Phone only** — NOT on the STB | search "Tellyscope APK" — get it from a source you trust |
 
 Install via ADB:
