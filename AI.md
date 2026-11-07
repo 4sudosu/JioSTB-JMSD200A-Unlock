@@ -153,7 +153,7 @@ Verified installs on JMSD200A (32-bit ARM, ABI `armeabi-v7a` — do NOT use arm6
 
 | App | Package | Notes |
 |---|---|---|
-| SmartTube 32.71 (armeabi-v7a) | `org.smarttube.stable` | YouTube w/o ads — [releases](https://github.com/yuliskov/SmartTube/releases) |
+| SmartTube 32.71 (armeabi-v7a) | `org.smarttube.stable` | YouTube w/o ads — [releases](https://github.com/yuliskov/SmartTube/releases). **Remote YouTube button (keycode 140, `jio_premium_remote_setup_complete`) mapped to SmartTube**; stock YouTube (`com.jio.yt`) uninstalled. |
 | Kartoons | `com.kartoons.app` | obtained APK |
 | NetMirror (Android TV) | `app.netmirror.newtv` | movies/series |
 | Send Files to TV 1.4.22 | `com.yablio.sendfilestotv` | **install from split bundle correctly** (see §7 xapk row); `REQUEST_INSTALL_PACKAGES` granted for direct installs |
@@ -180,7 +180,7 @@ This repo can restore the current box state (see `setup-manifest.json`). Use whe
 ./restore-setup.sh <STB_IP>:5555
 ```
 
-What it does: confirms ADB `device`, sets `global verifier_verify_adb_installs=0` + `secure install_non_market_apps=1`, installs bundled `apk/android-settings-shortcut.apk`, installs any matching APKs found in `user-apks/` (SmartTube `*armeabi-v7a*`, kartoons, netmirror Android TV, send files to tv), grants `com.yablio.sendfilestotv REQUEST_INSTALL_PACKAGES=allow` if present, prints missing items. **Safe to re-run.** Does NOT bundle third-party APKs and does NOT restore Jio launcher home-pin order (launcher-owned config).
+What it does: confirms ADB `device`, sets `global verifier_verify_adb_installs=0` + `secure install_non_market_apps=1`, maps **remote YouTube button (keycode 140, `jio_premium_remote_setup_complete`) → SmartTube** (`org.smarttube.stable`, keep stock YouTube uninstalled), installs bundled `apk/android-settings-shortcut.apk`, installs any matching APKs found in `user-apks/` (SmartTube `*armeabi-v7a*`, kartoons, netmirror Android TV, send files to tv), grants `com.yablio.sendfilestotv REQUEST_INSTALL_PACKAGES=allow` if present, prints missing items. **Safe to re-run.** Does NOT bundle third-party APKs and does NOT restore Jio launcher home-pin order (launcher-owned config).
 then APks can be sent/shared to the box and installed there:
 
 ```powershell

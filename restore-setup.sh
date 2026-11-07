@@ -18,7 +18,10 @@ echo "== Restoring setup on $STB =="
 echo "[1/4] System settings"
 adb -s "$STB" shell settings put global verifier_verify_adb_installs 0
 adb -s "$STB" shell settings put secure install_non_market_apps 1
-echo "  verifier_verify_adb_installs=0, install_non_market_apps=1"
+# Remote YouTube button -> SmartTube (Jio premium remote mapping)
+RK='[{"applicationName":"Hotstar","keycode":138,"packageName":"in.startv.hotstar"},{"applicationName":"Netflix","keycode":137,"packageName":"com.netflix.ninja"},{"applicationName":"PrimeVideo","keycode":134,"packageName":"com.amazon.amazonvideo.livingroom"},{"applicationName":"SonyLiv","keycode":141,"packageName":"com.jiotv.sonyliv"},{"applicationName":"Zee5","keycode":142,"packageName":"com.zee5.aosp"},{"applicationName":"SmartTube","keycode":140,"packageName":"org.smarttube.stable"}]'
+printf '%s' "$RK" | adb -s "$STB" shell "cat > /sdcard/jio_rk.json && settings put global jio_premium_remote_setup_complete \"\$(cat /sdcard/jio_rk.json)\""
+echo "  verifier=0, install_non_market_apps=1, YouTube remote button -> SmartTube"
 
 echo "[2/4] Settings shortcut (bundled, REQUIRED)"
 adb -s "$STB" install -r "$ROOT/apk/android-settings-shortcut.apk"

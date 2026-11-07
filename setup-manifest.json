@@ -2,7 +2,10 @@
   "device": "JMSD200A (Android 11, armeabi-v7a)",
   "adb_target_example": "192.168.137.89:5555",
   "system_settings": {
-    "global": { "verifier_verify_adb_installs": "0" },
+    "global": {
+      "verifier_verify_adb_installs": "0",
+      "jio_premium_remote_setup_complete": "[{\"applicationName\":\"Hotstar\",\"keycode\":138,\"packageName\":\"in.startv.hotstar\"},{\"applicationName\":\"Netflix\",\"keycode\":137,\"packageName\":\"com.netflix.ninja\"},{\"applicationName\":\"PrimeVideo\",\"keycode\":134,\"packageName\":\"com.amazon.amazonvideo.livingroom\"},{\"applicationName\":\"SonyLiv\",\"keycode\":141,\"packageName\":\"com.jiotv.sonyliv\"},{\"applicationName\":\"Zee5\",\"keycode\":142,\"packageName\":\"com.zee5.aosp\"},{\"applicationName\":\"SmartTube\",\"keycode\":140,\"packageName\":\"org.smarttube.stable\"}]"
+    },
     "secure": { "install_non_market_apps": "1" },
     "appops": [
       { "package": "com.yablio.sendfilestotv", "op": "REQUEST_INSTALL_PACKAGES", "mode": "allow", "when": "after Send Files to TV is installed" }

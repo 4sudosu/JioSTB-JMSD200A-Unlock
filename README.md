@@ -150,7 +150,7 @@ Verified working on JMSD200A — opens `com.android.tv.settings/.MainSettings` d
 
 ## 🔁 Restore this exact setup (one command)
 
-Once ADB is connected (`adb connect <STB_IP>:5555` → `device`), this repo can **restore the same apps/settings as this box** (SmartTube, Kartoons, NetMirror Android TV, Send Files to TV + install permission, Settings shortcut v1.3, and the required system flags).
+Once ADB is connected (`adb connect <STB_IP>:5555` → `device`), this repo can **restore the same apps/settings as this box** (SmartTube, Kartoons, NetMirror Android TV, Send Files to TV + install permission, Settings shortcut v1.3, **YouTube remote button → SmartTube**, and the required system flags).
 
 **Windows (PowerShell):**
 ```powershell
@@ -173,7 +173,7 @@ Apps that work well on this box (`armeabi-v7a` — always pick the **32-bit ARM*
 
 | App | Purpose | Install where | Where to get it |
 |---|---|---|---|
-| **SmartTube** | YouTube with **no ads** + background play + SponsorBlock | STB | [github.com/yuliskov/SmartTube/releases](https://github.com/yuliskov/SmartTube/releases) → pick `armeabi-v7a` |
+| **SmartTube** | YouTube with **no ads** + background play + SponsorBlock. **Remote YouTube button launches SmartTube** (applied by `unlock-setupbox.ps1` / `restore-setup.ps1`) — keep stock YouTube (`com.jio.yt` / `com.google.android.youtube.tv`) uninstalled. | STB | [github.com/yuliskov/SmartTube/releases](https://github.com/yuliskov/SmartTube/releases) → pick `armeabi-v7a` |
 | **NetMirror** | Latest movies & web series | STB | pick the **Android TV** build (not phone/PC/FireStick/Smart TV). Get it from a source you trust. |
 | **Kartoons** | Cartoons for kids | STB | search "Kartoons APK" — get it from a source you trust |
 | **Send Files to TV** | Phone ⇄ TV file sharing over Wi‑Fi, **and** direct APK installs on the box (see below) | STB **and** phone | Play Store on phone; on the box install `com.yablio.sendfilestotv`. If you have an `.xapk`, unzip & `adb install-multiple` base + `config.en` + density split — **skip `config.arm64_v8a`** on this 32-bit box or it crashes/mis-installs. |
