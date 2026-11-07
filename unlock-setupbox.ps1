@@ -74,6 +74,9 @@ while ((Get-Date) -lt $deadline -and -not $fired) {
       adb -s "${StbIp}:5555" install -r "$root\apk\youtube-button-remap.apk" | Out-Host
       adb -s "${StbIp}:5555" shell settings put global verifier_verify_adb_installs 0 2>&1 | Out-Null
       adb -s "${StbIp}:5555" shell settings put secure install_non_market_apps 1 2>&1 | Out-Null
+      foreach ($p in @('com.jio.store','com.jio.appoptimizer','com.jio.backgroundscheduler')) { adb -s "${StbIp}:5555" shell pm disable-user --user 0 $p 2>&1 | Out-Null }
+      adb -s "${StbIp}:5555" shell pm uninstall -k --user 0 com.jio.yt 2>&1 | Out-Null
+      adb -s "${StbIp}:5555" shell pm enable com.android.packageinstaller 2>&1 | Out-Null
       adb -s "${StbIp}:5555" shell settings put secure enabled_accessibility_services com.jiostb.youtubebutton/.YouTubeButtonService 2>&1 | Out-Null
       adb -s "${StbIp}:5555" shell settings put secure accessibility_enabled 1 2>&1 | Out-Null
       $rk = '[{"applicationName":"Hotstar","keycode":138,"packageName":"in.startv.hotstar"},{"applicationName":"Netflix","keycode":137,"packageName":"com.netflix.ninja"},{"applicationName":"PrimeVideo","keycode":134,"packageName":"com.amazon.amazonvideo.livingroom"},{"applicationName":"SonyLiv","keycode":141,"packageName":"com.jiotv.sonyliv"},{"applicationName":"Zee5","keycode":142,"packageName":"com.zee5.aosp"},{"applicationName":"SmartTube","keycode":140,"packageName":"org.smarttube.stable"}]'
@@ -83,8 +86,8 @@ while ((Get-Date) -lt $deadline -and -not $fired) {
       adb -s "${StbIp}:5555" push $rsh /data/local/tmp/jio_rk.sh 2>&1 | Out-Null
       adb -s "${StbIp}:5555" shell "sh /data/local/tmp/jio_rk.sh" 2>&1 | Out-Null
       Remove-Item $tmp,$rsh -ErrorAction SilentlyContinue
-      Write-Host "  Settings shortcut + YouTube button -> SmartTube remap enabled. Keep stock YouTube uninstalled." -ForegroundColor Green
-      Write-Host "Optional: run .\restore-setup.ps1 -Stb ${StbIp}:5555 to restore apps/settings." -ForegroundColor Cyan
+      Write-Host "  Defaults applied (hardened): Settings shortcut + Remote button remap (YouTube->SmartTube, Netflix->Kartoons), Jio store/appoptimizer/scheduler+yt disabled, pkg installer enabled." -ForegroundColor Green
+      Write-Host "Optional: run .\restore-setup.ps1 -Stb ${StbIp}:5555 to install full app set from user-apks/." -ForegroundColor Cyan
     } else {
       Write-Host "ADB not 'device' yet - accept the TV dialog if shown, or wait one more Inform cycle (~6 min), then: adb connect ${StbIp}:5555" -ForegroundColor Yellow
     }

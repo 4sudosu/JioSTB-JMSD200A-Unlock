@@ -18,17 +18,21 @@ echo "== Restoring setup on $STB =="
 echo "[1/4] System settings"
 adb -s "$STB" shell settings put global verifier_verify_adb_installs 0
 adb -s "$STB" shell settings put secure install_non_market_apps 1
-# Remote YouTube button -> SmartTube (Jio premium remote mapping)
+# Hardening (reversible; matches setup-manifest.json)
+for p in com.jio.store com.jio.appoptimizer com.jio.backgroundscheduler; do adb -s "$STB" shell pm disable-user --user 0 "$p" >/dev/null 2>&1 || true; done
+adb -s "$STB" shell pm uninstall -k --user 0 com.jio.yt >/dev/null 2>&1 || true
+adb -s "$STB" shell pm enable com.android.packageinstaller >/dev/null 2>&1 || true
+# Remote YouTube/Netflix buttons -> SmartTube/Kartoons (Jio premium remote mapping)
 RK='[{"applicationName":"Hotstar","keycode":138,"packageName":"in.startv.hotstar"},{"applicationName":"Netflix","keycode":137,"packageName":"com.netflix.ninja"},{"applicationName":"PrimeVideo","keycode":134,"packageName":"com.amazon.amazonvideo.livingroom"},{"applicationName":"SonyLiv","keycode":141,"packageName":"com.jiotv.sonyliv"},{"applicationName":"Zee5","keycode":142,"packageName":"com.zee5.aosp"},{"applicationName":"SmartTube","keycode":140,"packageName":"org.smarttube.stable"}]'
 printf '%s' "$RK" | adb -s "$STB" shell "cat > /sdcard/jio_rk.json && settings put global jio_premium_remote_setup_complete \"\$(cat /sdcard/jio_rk.json)\""
-echo "  verifier=0, install_non_market_apps=1, YouTube remote button -> SmartTube"
+echo "  verifier=0, install_non_market_apps=1, hardened (Jio store/appoptimizer/scheduler+yt disabled, pkg installer enabled), remote YouTube->SmartTube"
 
-echo "[2/4] Bundled required apps (Settings shortcut, YouTube button -> SmartTube)"
+echo "[2/4] Bundled required apps (Settings shortcut, Remote button remap)"
 adb -s "$STB" install -r "$ROOT/apk/android-settings-shortcut.apk"
 adb -s "$STB" install -r "$ROOT/apk/youtube-button-remap.apk"
 adb -s "$STB" shell settings put secure enabled_accessibility_services com.jiostb.youtubebutton/.YouTubeButtonService
 adb -s "$STB" shell settings put secure accessibility_enabled 1
-echo "  Settings shortcut + YouTube button remap (accessibility) installed/enabled"
+echo "  Settings shortcut + Remote button remap (YouTube->SmartTube, Netflix->Kartoons) installed/enabled"
 
 install_match() {
   name="$1"; pattern="$2"

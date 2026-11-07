@@ -19,7 +19,7 @@ cd JioSTB-JMSD200A-Unlock
 
 **Prereqs (install once):** [Docker Desktop](https://docs.docker.com/desktop/setup/install/windows-install/) (running), [Python 3](https://www.python.org/downloads/), [Git for Windows](https://gitforwindows.org/), [ADB platform-tools](https://developer.android.com/tools/releases/platform-tools) on PATH. `python -m pip install pycryptodome`
 
-What the script automates: GenieACS + TLS front-end + DNS spoof (Method B, `192.168.137.1`), watches for the STB, runs Stage 1 payload, polls ADB, installs the Settings shortcut. What **you** do when prompted: phone hotspot OFF → PC Mobile Hotspot ON → connect STB to PC hotspot (DHCP) → reboot STB → accept "Allow USB debugging" on TV if shown. After unlock: `.\restore-setup.ps1 -Stb <STB_IP>:5555` restores apps/settings. Full details below.
+What the script automates: GenieACS + TLS front-end + DNS spoof (Method B, `192.168.137.1`), watches for the STB, runs Stage 1 payload, polls ADB, and applies the **default setup** (Settings shortcut, remote button remap YouTube→SmartTube/Netflix→Kartoons, required flags, hardening — see `setup-manifest.json`). What **you** do when prompted: phone hotspot OFF → PC Mobile Hotspot ON → connect STB to PC hotspot (DHCP) → reboot STB → accept "Allow USB debugging" on TV if shown. After unlock (optional): `.\restore-setup.ps1 -Stb <STB_IP>:5555` installs the full app set from `user-apks/`. Full details below.
 
 ---
 
@@ -150,7 +150,7 @@ Verified working on JMSD200A — opens `com.android.tv.settings/.MainSettings` d
 
 ## 🔁 Restore this exact setup (one command)
 
-Once ADB is connected (`adb connect <STB_IP>:5555` → `device`), this repo can **restore the same apps/settings as this box** (SmartTube, Kartoons, NetMirror Android TV, Send Files to TV + install permission, Settings shortcut v1.3, **remote button remap: YouTube→SmartTube, Netflix→Kartoons** via accessibility service, and the required system flags).
+Once ADB is connected (`adb connect <STB_IP>:5555` → `device`), this repo restores the **same default setup as this box** — applied by `unlock-setupbox.ps1` and `restore-setup.ps1/.sh`: SmartTube, Kartoons, NetMirror Android TV, Send Files to TV + install permission, Settings shortcut v1.3, **remote button remap: YouTube→SmartTube, Netflix→Kartoons** (accessibility), required system flags, and hardening (disables `com.jio.store`, `com.jio.appoptimizer`, `com.jio.backgroundscheduler`, uninstalls/disables stock `com.jio.yt` for user 0, re-enables package installer). Reversible/idempotent.
 
 **Windows (PowerShell):**
 ```powershell
@@ -165,7 +165,7 @@ Put any APKs you provide yourself into `user-apks/` (gitignored). The script ins
 
 **Tell your AI (copy-paste):** *"In this repo, run restore-setup for my Jio STB at `<STB_IP>:5555`. Apply settings from setup-manifest.json, install apk/android-settings-shortcut.apk, install any matching APKs from user-apks/, and grant Send Files to TV REQUEST_INSTALL_PACKAGES if present. Show what's missing."*
 
-> Note: Jio launcher home-screen pin order isn't auto-restored (the launcher keeps its own config). Factory reset wipes per-user state — re-run after reset.
+> Note: Jio launcher home-screen pin order isn't auto-restored (the launcher keeps its own config). Factory reset wipes per-user state — re-run after reset. Hardening uses `pm disable-user`/uninstall-for-user and is reversible (`pm enable <pkg>`).
 
 ## 📲 Recommended APKs
 

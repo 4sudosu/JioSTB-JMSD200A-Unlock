@@ -11,7 +11,10 @@ Write-Host "== Restoring setup on $Stb =="
 Write-Host "[1/4] System settings"
 adb -s $Stb shell settings put global verifier_verify_adb_installs 0 | Out-Null
 adb -s $Stb shell settings put secure install_non_market_apps 1 | Out-Null
-# Remote YouTube button -> SmartTube (Jio premium remote mapping)
+foreach ($p in @('com.jio.store','com.jio.appoptimizer','com.jio.backgroundscheduler')) { adb -s $Stb shell pm disable-user --user 0 $p 2>&1 | Out-Null }
+adb -s $Stb shell pm uninstall -k --user 0 com.jio.yt 2>&1 | Out-Null
+adb -s $Stb shell pm enable com.android.packageinstaller 2>&1 | Out-Null
+# Remote YouTube/Netflix buttons -> SmartTube/Kartoons (Jio premium remote mapping)
 $rk = '[{"applicationName":"Hotstar","keycode":138,"packageName":"in.startv.hotstar"},{"applicationName":"Netflix","keycode":137,"packageName":"com.netflix.ninja"},{"applicationName":"PrimeVideo","keycode":134,"packageName":"com.amazon.amazonvideo.livingroom"},{"applicationName":"SonyLiv","keycode":141,"packageName":"com.jiotv.sonyliv"},{"applicationName":"Zee5","keycode":142,"packageName":"com.zee5.aosp"},{"applicationName":"SmartTube","keycode":140,"packageName":"org.smarttube.stable"}]'
 $tmp = Join-Path $env:TEMP "jio_rk_$(Get-Random).json"
 [IO.File]::WriteAllText($tmp, $rk)
@@ -21,7 +24,7 @@ $rsh = Join-Path $env:TEMP "jio_rk_$(Get-Random).sh"
 adb -s $Stb push $rsh /data/local/tmp/jio_rk.sh 2>&1 | Out-Null
 adb -s $Stb shell "sh /data/local/tmp/jio_rk.sh" 2>&1 | Out-Null
 Remove-Item $tmp,$rsh -ErrorAction SilentlyContinue
-Write-Host "  verifier=0, install_non_market_apps=1, YouTube remote button -> SmartTube"
+Write-Host "  verifier=0, install_non_market_apps=1, hardened (Jio store/appoptimizer/scheduler+yt disabled, pkg installer enabled), remote YouTube->SmartTube"
 
 Write-Host "[2/4] Bundled required apps (Settings shortcut, YouTube button -> SmartTube)"
 adb -s $Stb install -r "$PSScriptRoot\apk\android-settings-shortcut.apk" | Out-Null

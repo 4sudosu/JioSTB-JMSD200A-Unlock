@@ -13,7 +13,9 @@
     },
     "appops": [
       { "package": "com.yablio.sendfilestotv", "op": "REQUEST_INSTALL_PACKAGES", "mode": "allow", "when": "after Send Files to TV is installed" }
-    ]
+    ],
+    "disable_user_packages": ["com.jio.store", "com.jio.appoptimizer", "com.jio.backgroundscheduler", "com.jio.yt"],
+    "enable_packages": ["com.android.packageinstaller"]
   },
   "apps": [
     { "name": "SmartTube", "package": "org.smarttube.stable", "required": true, "abi": "armeabi-v7a", "source": "https://github.com/yuliskov/SmartTube/releases (pick *_armeabi-v7a.apk)", "local_pattern": "*SmartTube*armeabi-v7a*.apk" },
@@ -25,8 +27,10 @@
     { "name": "Remote button remap", "package": "com.jiostb.youtubebutton", "required": true, "bundled": "apk/youtube-button-remap.apk", "note": "REQUIRED for remote: accessibility service remaps YouTube (140/scan187) → SmartTube, Netflix (137) → Kartoons" }
   ],
   "notes": [
+    "unlock-setupbox.ps1 and restore-setup.ps1/.sh apply this setup by default (settings, bundled apps, hardening, remote remap).",
     "Home-screen pin order is controlled by Jio launcher private config and is not restored by this script.",
     "Factory reset wipes per-user state — re-run restore after reset.",
+    "Hardening (disable-user/uninstall-for-user) is reversible: pm enable <pkg>.",
     "All APKs must be armeabi-v7a (32-bit). Do not use arm64."
   ]
 }
